@@ -13,9 +13,14 @@ help() {
     echo "Avaliable options:"
     echo "-h"
     echo "      Help info"
+    echo ""
     echo "-file [FILE_PATH]"
     echo "      This option allows user to encode words from file"
     echo ""
+    echo "-out [FILE_NAME]"
+    echo "      This option allows user to save the result in file under the given name"
+    echo ""
+
 }
 
 
@@ -72,7 +77,7 @@ morse["8"]="---.."
 morse["9"]="----."
 morse["0"]="-----"
 
-morse[|]="|"
+morse["|"]="|"
 
 
 main() {
@@ -82,10 +87,6 @@ main() {
         if [ "$read_file" == true ]; then
             getwords
             args=$words
-            # echo "read_file checker ==========="
-            # echo "$words"
-            # echo "$args"
-            # echo "read_file checker ==========="
         fi
 
         for arg in $args; do
@@ -96,13 +97,21 @@ main() {
             output="${output} ${morse[$l]} "
         done
 
+        if [ "$result_file" == true ]; then
+            echo $output > $result
+            echo "Encoded text saved succesfully in $result"
+        else
+            echo $output
+        fi
     fi
 }
+
 
 # settings
 help_option=false
 read_file=false
 get_file=false
+result_file=false
 
 
 sep=" | "
@@ -120,7 +129,8 @@ fi
 for word in $args; do 
     if [ "$word" == "-h" ]; then
         help_option=true
-    fi    
+    fi
+
     if [ "$get_file" == true ]; then
         file=$word
         get_file=false
@@ -130,11 +140,20 @@ for word in $args; do
         read_file=true
         get_file=true
         args=("${args[@]/"-file"}")
-    fi    
+    fi
+
+    if [ "$result_file" == true ]; then
+        result=$word
+        read_file=false
+    fi
+    if [ "$word" == "-out" ]; then
+        result_file=true
+    fi
 done
 
 
 main $args
 
-echo $output 
+
+# echo $output 
 # echo "$args"
