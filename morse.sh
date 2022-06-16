@@ -102,14 +102,14 @@ main() {
         if [ $switches == true ]; then
             if [ "$result_name" == true ]; then
                 echo $output | tr . "$dot" | tr - "$dash" > $result
-                echo "Encoded text succesfully saved in $result"
+                echo "Encoded text was successfully saved in $result"
             else
                 echo $output | tr . "$dot" | tr - "$dash"
             fi
         else
             if [ "$result_file" == true ]; then
                 echo $output > $result
-                echo "Encoded text succesfully saved in $result"
+                echo "Encoded text was successfully saved in $result"
             else
                 echo $output
             fi
