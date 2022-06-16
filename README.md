@@ -1,4 +1,4 @@
-# pp-sem-ii-so-project
+# pp-infa-semII-so
 A script that helps user to encode a word or phrase to a morse code. User can get the result in console, but also can save it in `result.txt` file.
 
 ### Run script
