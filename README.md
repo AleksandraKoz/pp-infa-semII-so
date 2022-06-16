@@ -3,10 +3,10 @@ A script that helps user to encode a word or phrase to a morse code. User can ge
 
 ### Run script
 
-``bash morse.sh [words]``
-``bash morse.sh -file data.txt``
-``bash morse.sh -out result.txt [words]``
-``bash morse.sh -switch [character_1] [character_2] [words]``
+```bash morse.sh [words]```
+```bash morse.sh -file data.txt```
+```bash morse.sh -out result.txt [words]```
+```bash morse.sh -switch [character_1] [character_2] [words]```
 
 #### Help:  
 
