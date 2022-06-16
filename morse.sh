@@ -1,14 +1,35 @@
 #!/bin/bash
 
+
 help() {
-    echo "NAME: Morse decoder"
-    echo "DESCRIPTION: A script to help user to encode a word or phrase to a morse code. User can get the result in console, but also can save it in result.txt file."
+    echo "NAME: Morse encoder"
+    echo "DESCRIPTION: A script that helps user to encode a word or phrase to a morse code. User can get the result in console, but also can save it in result.txt file."
+    echo ""
+
+    echo ""
+    echo "Sample execution:"
+    echo "bash morse.sh word1 word2 word3 ..."
+    echo ""
+    echo "Avaliable options:"
+    echo "-h"
+    echo "      Help info"
+    echo "-file [FILE_PATH]"
+    echo "      This option allows user to encode words from file"
     echo ""
 }
 
 
+getwords() {
+    words=""
+    lines=`cat data.txt`
+    for line in $lines; do
+        words="${words}${line} "
+    done
+}
+
+
 upper() {
-    echo "$1" | tr [a-z] [A-Z]
+    echo "$1" | tr [a-z] [A-Z] 
 }
 
 
@@ -51,29 +72,43 @@ morse["8"]="---.."
 morse["9"]="----."
 morse["0"]="-----"
 
+morse[|]="|"
+
 
 main() {
     if [ "$help_option" == true ]; then
         help
     else
-        for l in $(echo $args | sed -e 's/\(.\)/\1\n/g'); do
-        if [ "$l" != "|" ]; then
-            output="${output} ${morse[$l]} ";
-        else
-            output="${output}$sep"
+        if [ "$read_file" == true ]; then
+            getwords
+            args=$words
+            # echo "read_file checker ==========="
+            # echo "$words"
+            # echo "$args"
+            # echo "read_file checker ==========="
         fi
+
+        for arg in $args; do
+            args="${args}$(upper "$arg") $sep"
         done
+
+        for l in $(echo $args | sed -e 's/\(.\)/\1\n/g'); do
+            output="${output} ${morse[$l]} "
+        done
+
     fi
 }
 
 # settings
 help_option=false
+read_file=false
+get_file=false
 
 
-sep="|"
+sep=" | "
 args=""
 for arg; do
-    args="${args} $(upper "$arg") |"
+    args="${args} $arg"
 done
 
 
@@ -83,16 +118,23 @@ fi
 
 
 for word in $args; do 
-    if [ "$word" == "-H" ]; then
+    if [ "$word" == "-h" ]; then
         help_option=true
+    fi    
+    if [ "$get_file" == true ]; then
+        file=$word
+        get_file=false
+        getwords
     fi
-    
-    
+    if [ "$word" == "-file" ]; then
+        read_file=true
+        get_file=true
+        args=("${args[@]/"-file"}")
+    fi    
 done
 
 
 main $args
 
-
-echo "$output"
+echo $output 
 # echo "$args"
