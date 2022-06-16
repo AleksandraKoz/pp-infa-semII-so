@@ -20,13 +20,15 @@ help() {
     echo "-out [FILE_NAME]"
     echo "      This option allows user to save the result in file under the given name"
     echo ""
-
+    echo "-switch [DOT] [DASH]"
+    echo "      This option allows user to change symbols (dots and dashes) to different ones. A script will take two next characters after choosing this option"
+    echo ""
 }
 
 
 getwords() {
     words=""
-    lines=`cat data.txt`
+    lines=`cat $file`
     for line in $lines; do
         words="${words}${line} "
     done
@@ -97,11 +99,20 @@ main() {
             output="${output} ${morse[$l]} "
         done
 
-        if [ "$result_file" == true ]; then
-            echo $output > $result
-            echo "Encoded text saved succesfully in $result"
+        if [ $switches == true ]; then
+            if [ "$result_name" == true ]; then
+                echo $output | tr . "$dot" | tr - "$dash" > $result
+                echo "Encoded text succesfully saved in $result"
+            else
+                echo $output | tr . "$dot" | tr - "$dash"
+            fi
         else
-            echo $output
+            if [ "$result_file" == true ]; then
+                echo $output > $result
+                echo "Encoded text succesfully saved in $result"
+            else
+                echo $output
+            fi
         fi
     fi
 }
@@ -112,6 +123,10 @@ help_option=false
 read_file=false
 get_file=false
 result_file=false
+switches=false
+dot_check=false
+dash_check=false
+result_name=false
 
 
 sep=" | "
@@ -134,7 +149,6 @@ for word in $args; do
     if [ "$get_file" == true ]; then
         file=$word
         get_file=false
-        getwords
     fi
     if [ "$word" == "-file" ]; then
         read_file=true
@@ -144,10 +158,30 @@ for word in $args; do
 
     if [ "$result_file" == true ]; then
         result=$word
-        read_file=false
+        result_file=false
+        result_name=true
+        args=("${args[@]/"${result}"}")
     fi
     if [ "$word" == "-out" ]; then
         result_file=true
+        args=("${args[@]/"-out"}")
+    fi
+
+    if [ "$dash_check" == true ]; then
+        dash_check=false
+        dash=$word
+        args=("${args[@]/"${dash}"}")
+    fi
+    if [ "$dot_check" == true ]; then
+        dash_check=true
+        dot_check=false
+        dot=$word
+        args=("${args[@]/"${dot}"}")
+    fi
+    if [ "$word" == "-switch" ]; then
+        switches=true
+        dot_check=true
+        args=("${args[@]/"-switch"}")
     fi
 done
 
